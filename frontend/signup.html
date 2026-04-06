@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background-color: #f9fafb;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #message {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card shadow rounded-4 w-100" style="max-width: 420px;">
+    <div class="card-header bg-warning text-dark text-center fs-4 fw-semibold py-3">
+      Create Your Account
+    </div>
+    <div class="card-body p-4 bg-white">
+      <form id="signupForm">
+         <div class="mb-3">
+          <select name="usertype" id="usertype">
+            <option value="buyer">buyer</option>
+             <option value="Seller">Seller</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <input type="text" id="name" class="form-control form-control-lg rounded-3" placeholder="Full Name" required />
+        </div>
+        <div class="mb-3">
+          <input type="email" id="email" class="form-control form-control-lg rounded-3" placeholder="Email Address" required />
+        </div>
+        <div class="mb-3">
+          <input type="password" id="password" class="form-control form-control-lg rounded-3" placeholder="Password" required />
+        </div>
+        <button type="submit" class="btn btn-warning btn-lg w-100 rounded-3 fw-bold">Sign Up</button>
+        <p id="message" class="text-center mt-3"></p>
+      </form>
+      <div class="text-center mt-3">
+        <span>Already have an account?</span> <a href="signin.html" class="text-warning fw-semibold text-decoration-none">Sign In</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const messageElem = document.getElementById("message");
+ const usertype = document.getElementById("usertype").value.trim();
+      
+      try {
+        const res = await fetch("http://localhost:3000/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password,usertype }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          messageElem.textContent = data.message || "Signup successful!";
+          messageElem.className = "text-success text-center";
+          this.reset();
+        } else {
+          messageElem.textContent = data.message || "Signup failed. Try again.";
+          messageElem.className = "text-danger text-center";
+        }
+      } catch (error) {
+        messageElem.textContent = "Server error. Please again.";
+        messageElem.className = "text-danger text-center";
+      }
+    });
+  </script>
+
+</body>
+</html>
